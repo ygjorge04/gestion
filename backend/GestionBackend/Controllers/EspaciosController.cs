@@ -1,0 +1,64 @@
+using Microsoft.AspNetCore.Mvc;
+using GestionBackend.Data;
+using GestionBackend.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace GestionBackend.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class EspacioController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public EspacioController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEspacios() =>
+            Ok(await _context.Espacios.ToListAsync());
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEspacio(int id)
+        {
+            var espacio = await _context.Espacios.FindAsync(id);
+            return espacio == null ? NotFound("Espacio no encontrado") : Ok(espacio);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateEspacio([FromBody] Espacio espacio)
+        {
+            _context.Espacios.Add(espacio);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetEspacio), new { id = espacio.Id }, espacio);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEspacio(int id, [FromBody] Espacio e)
+        {
+            var espacio = await _context.Espacios.FindAsync(id);
+            if (espacio == null) return NotFound("Espacio no encontrado");
+
+            espacio.Nombre = e.Nombre;
+            espacio.Tipo = e.Tipo;
+            espacio.Capacidad = e.Capacidad;
+            espacio.Ubicacion = e.Ubicacion;
+            await _context.SaveChangesAsync();
+
+            return Ok(espacio);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEspacio(int id)
+        {
+            var espacio = await _context.Espacios.FindAsync(id);
+            if (espacio == null) return NotFound("Espacio no encontrado");
+
+            _context.Espacios.Remove(espacio);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+    }
+}
