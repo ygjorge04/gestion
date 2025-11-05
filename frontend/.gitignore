@@ -1,1 +1,16 @@
+# Angular and Node
+node_modules/
+dist/
+.tmp/
+.vscode/
+.idea/
+.angular/
+coverage/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+src/environments/environment*.ts
 
