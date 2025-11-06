@@ -4,10 +4,15 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UsuariosService {
-  private apiUrl = `${environment.apiUrl}/usuarios`;
+  private apiUrl = `${environment.apiUrl}/Usuario`;
 
   constructor(private http: HttpClient) {}
+
+  // 👇 Este método es el que falta
+  getUsuarios(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
 }
