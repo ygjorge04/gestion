@@ -1,0 +1,6 @@
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\GestionBackend.csproj.AssemblyReference.cache
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\GestionBackend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\GestionBackend.csproj.CoreCompileInputs.cache
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\GestionBackend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\yague\Downloads\Gestion_Servicios\backend\GestionBackend\obj\Debug\net8.0\GestionBackend.MvcApplicationPartsAssemblyInfo.cache

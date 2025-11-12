@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionBackend.Data;
 using GestionBackend.Models;
+using GestionBackend.Services; // 👈 KafkaProducerService
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionBackend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    
     public class UsuarioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly KafkaProducerService _kafkaProducer;
 
         public UsuarioController(ApplicationDbContext context)
         {
             _context = context;
+            _kafkaProducer = new KafkaProducerService(); // inicializamos
         }
 
         [HttpGet]
@@ -36,6 +40,10 @@ namespace GestionBackend.Controllers
         {
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
+
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("usuario-creado", usuario);
+
             return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, usuario);
         }
 
@@ -51,6 +59,10 @@ namespace GestionBackend.Controllers
             usuario.Rol = usuarioActualizado.Rol;
 
             await _context.SaveChangesAsync();
+
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("usuario-actualizado", usuario);
+
             return Ok(usuario);
         }
 
@@ -62,7 +74,13 @@ namespace GestionBackend.Controllers
 
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
+
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("usuario-eliminado", new { Id = usuario.Id });
+
             return NoContent();
         }
+        
     }
+    
 }

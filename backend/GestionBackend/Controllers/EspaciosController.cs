@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionBackend.Data;
 using GestionBackend.Models;
+using GestionBackend.Services; // 👈 KafkaProducerService
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionBackend.Controllers
@@ -10,10 +11,12 @@ namespace GestionBackend.Controllers
     public class EspacioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly KafkaProducerService _kafkaProducer;
 
         public EspacioController(ApplicationDbContext context)
         {
             _context = context;
+            _kafkaProducer = new KafkaProducerService(); // inicializamos Kafka
         }
 
         [HttpGet]
@@ -32,6 +35,10 @@ namespace GestionBackend.Controllers
         {
             _context.Espacios.Add(espacio);
             await _context.SaveChangesAsync();
+
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("espacio-creado", espacio);
+
             return CreatedAtAction(nameof(GetEspacio), new { id = espacio.Id }, espacio);
         }
 
@@ -47,6 +54,9 @@ namespace GestionBackend.Controllers
             espacio.Ubicacion = e.Ubicacion;
             await _context.SaveChangesAsync();
 
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("espacio-actualizado", espacio);
+
             return Ok(espacio);
         }
 
@@ -58,6 +68,10 @@ namespace GestionBackend.Controllers
 
             _context.Espacios.Remove(espacio);
             await _context.SaveChangesAsync();
+
+            // Publicar evento Kafka
+            await _kafkaProducer.PublishAsync("espacio-eliminado", new { Id = espacio.Id });
+
             return NoContent();
         }
     }
